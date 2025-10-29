@@ -21,12 +21,13 @@ This unit, be sure to complete all tasks listed below. To complete a task, place
 
 ### 1. What went well during this unit?
 
-[👉🏾👉🏾👉🏾 your answer here]
+The ideas and scope of the project and all the features that were planned for the project.
 
 ### 2. What were some challenges your group faced in this unit?
 
-[👉🏾👉🏾👉🏾 your answer here]
+Getting suitable meeting times for every member.
 
 ### 3. What additional support will you need in upcoming units as you continue to work on your final project?
 
-[👉🏾👉🏾👉🏾 your answer here]
+Getting access to real-life data for maintenance tickets
+Getting feedback on usability and accessibility, especially for mobile and tablet views.
