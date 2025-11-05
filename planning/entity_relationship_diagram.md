@@ -1,6 +1,6 @@
 # Entity Relationship Diagram
 
-Reference the Creating an Entity Relationship Diagram final project guide in the course portal for more information about how to complete this deliverable.
+Reference for the Database design of ServiceLink, showing all the tables and their respective columns and relationships.
 
 ## Create the List of Tables
 
