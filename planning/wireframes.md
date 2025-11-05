@@ -4,8 +4,6 @@ Reference the Creating an Entity Relationship Diagram final project guide in the
 
 ## List of Pages
 
-[👉🏾👉🏾👉🏾 List the pages you expect to have in your app, with a ⭐ next to pages you have wireframed]
-
 - ⭐ Student Dashboard Page
 - ⭐ Technician Dashboard Page
 - ⭐ Request Submission Page
@@ -13,12 +11,12 @@ Reference the Creating an Entity Relationship Diagram final project guide in the
 
 ## Wireframe 1: Student Dashboard
 
-<img src="./student_dashboard.png">
+<img src="./images/student_dashboard.png">
 
 ## Wireframe 2: Technician Dashboard
 
-<img src="./it_dashboard.png">
+<img src="./images/it_dashboard.png">
 
 ## Wireframe 3: Request Submission Form Page
 
-<img src="./request_submission_form.png">
+<img src="./images/request_submission_form.png">
