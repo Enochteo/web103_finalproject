@@ -6,16 +6,19 @@ Reference the Creating an Entity Relationship Diagram final project guide in the
 
 [👉🏾👉🏾👉🏾 List the pages you expect to have in your app, with a ⭐ next to pages you have wireframed]
 
-## Wireframe 1: [page title]
+- ⭐ Student Dashboard Page
+- ⭐ Technician Dashboard Page
+- ⭐ Request Submission Page
+- Admin Dashboard
 
-[👉🏾👉🏾👉🏾 include wireframe 1]
+## Wireframe 1: Student Dashboard
 
-## Wireframe 2: [page title]
+<img src="./student_dashboard.png">
 
-[👉🏾👉🏾👉🏾 include wireframe 2]
+## Wireframe 2: Technician Dashboard
 
-## Wireframe 3: [page title]
+<img src="./it_dashboard.png">
 
-[👉🏾👉🏾👉🏾 include wireframe 3]
+## Wireframe 3: Request Submission Form Page
 
-[👉🏾👉🏾👉🏾 include more wireframes as desired]
+<img src="./request_submission_form.png">
