@@ -8,7 +8,7 @@ Reference the Creating an Entity Relationship Diagram final project guide in the
 - Requests
 - Category
 - Resolution
-- RequestCategory
+- RequestCategory (Join Table)
 
 ## Entity Relationship Diagram
 
