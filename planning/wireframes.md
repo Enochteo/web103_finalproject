@@ -20,3 +20,11 @@ Reference the Creating an Entity Relationship Diagram final project guide in the
 ## Wireframe 3: Request Submission Form Page
 
 <img src="./images/request_submission_form.png">
+
+## Mock Ups
+
+![alt text](./images/student_dashboard_mockup.png)
+
+![alt text](./images/request_submission_mockup.png)
+
+![alt text](./images/admin_dashboard_mockup.png)
