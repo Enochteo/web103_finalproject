@@ -10,7 +10,7 @@ Reference the Creating an Entity Relationship Diagram final project guide in the
 - Resolution
 - RequestCategory
 
-## Add the Entity Relationship Diagram
+## Entity Relationship Diagram
 
 <img src="./images/erd.png">
 
