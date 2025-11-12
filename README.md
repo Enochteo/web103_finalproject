@@ -30,47 +30,37 @@ Backend: Express.js, Node.js, PostgreSQL
 
 ## Features
 
-### Request Submission Form
+### Request Submission Form ✅
 
 Users can submit maintenance or IT requests through a simple online form that captures key details such as title, description, location, category, urgency, and optional image upload.
 This replaces paper or email-based reporting with a more efficient digital workflow.
 
-[gif goes here]
+<img src="./planning/images/final_project.gif">
 
-### Request Tracking Dashboard
+### Request Tracking Dashboard ✅
 
 Each user has access to a personal dashboard displaying all submitted requests along with their current status (Pending, In Progress, or Resolved).
 This feature promotes transparency and accountability, ensuring users can easily follow up on issues.
 
-[gif goes here]
-
-### Admin & Technician Panel
+### Admin & Technician Panel ✅
 
 Administrators and technicians can log in to view, filter, and manage all maintenance requests.
 They can assign tasks, update request statuses, and add resolution notes once the issue is resolved.
 
-[gif goes here]
-
-### Filtering and Sorting
+### Filtering and Sorting ✅
 
 Admins and technicians can filter requests by category, urgency, or status, and sort them by date or priority.
 This feature helps prioritize high-impact issues and maintain organized workflows.
 
-[gif goes here]
-
-### Resolution Management (One-to-One Relationship)
+### Resolution Management (One-to-One Relationship) ✅
 
 Each request has a corresponding resolution record that stores details about how the issue was fixed, who resolved it, and when.
 This ensures proper documentation and allows staff to maintain a history of completed work.
-
-[gif goes here]
 
 ### Real-Time Notifications & Feedback
 
 Users receive confirmation messages or toast alerts when submitting, updating, or resolving a request.
 This immediate feedback improves user experience and ensures communication between reporters and maintenance staff remains seamless.
-
-[gif goes here]
 
 ### [ADDITIONAL FEATURES GO HERE - ADD ALL FEATURES HERE IN THE FORMAT ABOVE; you will check these off and add gifs as you complete them]
 
