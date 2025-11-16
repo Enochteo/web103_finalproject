@@ -1,56 +1,98 @@
-import { pool } from "./database.js";
 import "./dotenv.js";
-import { fileURLToPath } from "url";
-import path, { dirname } from "path";
-import fs from "fs";
+import { pool } from "./database.js";
 
-const currentPath = fileURLToPath(import.meta.url);
-
-const requestsFile = fs.readFileSync(
-  path.join(dirname(currentPath), "../config/data/data.json")
-);
+const createUsersTable = async () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS Users (
+      id SERIAL PRIMARY KEY,
+      username VARCHAR(100) NOT NULL,
+      email VARCHAR(200) UNIQUE NOT NULL,
+      role VARCHAR(20) CHECK (role IN ('STUDENT', 'TECHNICIAN', 'ADMIN')) NOT NULL,
+      hashed_password TEXT NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+    );
+  `;
+  await pool.query(query);
+  console.log("Users table created");
+};
 
 const createRequestsTable = async () => {
-  const createRequestsTableQuery = `
-      DROP TABLE IF EXISTS requests;
-
-      CREATE TABLE IF NOT EXISTS requests (
-          id serial PRIMARY KEY,
-          title varchar(100) NOT NULL,
-          description text NOT NULL,
-          location varchar(100) NOT NULL,
-          urgency enum(LOW, MEDIUM, HIGH) NOT NULL,
-          status enum(PENDING, IN-PROGRESS, RESOLVED) NOT NULL,
-          created_at timestamp NOT NULL,
-          user_id integer NOT NULL,
-          assigned_to integer NOT NULL
-      );
+  const query = `
+    CREATE TABLE IF NOT EXISTS Requests (
+      id SERIAL PRIMARY KEY,
+      title VARCHAR(100) NOT NULL,
+      description TEXT NOT NULL,
+      location VARCHAR(100) NOT NULL,
+      urgency VARCHAR(10) CHECK (urgency IN ('LOW', 'MEDIUM', 'HIGH')) NOT NULL,
+      status VARCHAR(20) CHECK (status IN ('PENDING', 'IN_PROGRESS', 'RESOLVED')) NOT NULL,
+      created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      user_id INTEGER NOT NULL,
+      assigned_to INTEGER,
+      FOREIGN KEY (user_id) REFERENCES Users(id),
+      FOREIGN KEY (assigned_to) REFERENCES Users(id)
+    );
   `;
+  await pool.query(query);
+  console.log("Requests table created");
+};
+
+const createCategoriesTable = async () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS Categories (
+      id SERIAL PRIMARY KEY,
+      name VARCHAR(100) NOT NULL
+    );
+  `;
+  await pool.query(query);
+  console.log("Categories table created");
+};
+
+const createResolutionsTable = async () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS Resolutions (
+      id SERIAL PRIMARY KEY,
+      request_id INTEGER UNIQUE NOT NULL,
+      admin_notes TEXT,
+      photo_url VARCHAR(255),
+      resolved_at TIMESTAMP NOT NULL,
+      FOREIGN KEY (request_id) REFERENCES Requests(id)
+    );
+  `;
+  await pool.query(query);
+  console.log("Resolutions table created");
+};
+
+const createRequestCategoryTable = async () => {
+  const query = `
+    CREATE TABLE IF NOT EXISTS RequestCategory (
+      id SERIAL PRIMARY KEY,
+      request_id INTEGER NOT NULL,
+      category_id INTEGER NOT NULL,
+      FOREIGN KEY (request_id) REFERENCES Requests(id),
+      FOREIGN KEY (category_id) REFERENCES Categories(id)
+    );
+  `;
+  await pool.query(query);
+  console.log("RequestCategory table created");
+};
+
+const createAllTables = async () => {
   try {
-    const res = await pool.query(createRequestsTableQuery);
-    console.log("🎉 requests table created successfully");
-  } catch (err) {
-    console.error("⚠️ error creating requests table", err);
+    await pool.query(`
+  DROP TABLE IF EXISTS RequestCategory, Resolutions, Requests, Categories, Users CASCADE;
+`);
+    await createUsersTable();
+    await createCategoriesTable();
+    await createRequestsTable();
+    await createResolutionsTable();
+    await createRequestCategoryTable();
+
+    console.log("All tables created successfully!");
+  } catch (error) {
+    console.error("Error creating tables:", error);
+  } finally {
+    pool.end();
   }
 };
 
-const createUsersTable = async () => {
-  const createUsersTableQuery = `
-    CREATE TABLE IF NOT EXISTS users (
-        id serial PRIMARY KEY,
-        username varchar(100) NOT NULL,
-        email varchar(200) NOT NULL,
-        role enum(STUDENT, TECHNICIAN, ADMIN) NOT NULL
-        hashed_password text NOT NULL
-        created_at timestamp NOT NULL
-)
-    `;
-};
-
-const createCategoryTable = async () => {
-  const createCategoryTableQuery = `
-    CREATE TABLE IF NOT EXISTS categories (
-        id serial PRIMARY KEY,
-        name varchar NOT NULL,
-    `;
-};
+createAllTables();
