@@ -1,4 +1,4 @@
-import { React, useState } from "react";
+import { React, useState, useEffect } from "react";
 
 const CreateRequest = () => {
   const [request, setRequest] = useState({
@@ -7,8 +7,22 @@ const CreateRequest = () => {
     location: "",
     urgency: "LOW",
     user_id: "1",
+    category_id: "",
   });
+  const [categories, setCategories] = useState([]);
 
+  useEffect(() => {
+    const getAllCategories = async () => {
+      try {
+        const res = await fetch("http://localhost:3000/api/categories");
+        const data = await res.json();
+        setCategories(data);
+      } catch (error) {
+        console.error("Error", error);
+      }
+    };
+    getAllCategories();
+  }, []);
   const handleChange = (event) => {
     const { name, value } = event.target;
     setRequest((prev) => {
@@ -35,6 +49,7 @@ const CreateRequest = () => {
       location: "",
       urgency: "LOW",
       user_id: "1",
+      category_id: "",
     });
   };
   return (
@@ -68,14 +83,6 @@ const CreateRequest = () => {
             onChange={handleChange}
           />
 
-          {/* <label> Category </label>
-          <select name="category" id="category">
-            <option value="housing">Housing</option>
-            <option value="library">Library</option>
-            <option value="laboratory">Laboratory</option>
-            <option value="office">Office</option>
-          </select> */}
-
           <label> Urgency Level </label>
           <select
             name="urgency"
@@ -86,6 +93,21 @@ const CreateRequest = () => {
             <option value="LOW">LOW</option>
             <option value="MEDIUM">MEDIUM</option>
             <option value="HIGH">HIGH</option>
+          </select>
+
+          <label> Category </label>
+          <select
+            name="category_id"
+            id="category_id"
+            onChange={handleChange}
+            value={request.category_id}
+          >
+            <option value="">Select a category</option>
+            {categories.map((category) => (
+              <option key={category.id} value={category.id}>
+                {category.name}
+              </option>
+            ))}
           </select>
           <button onClick={handleSubmit}>Send Request</button>
         </form>
