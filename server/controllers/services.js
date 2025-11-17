@@ -27,8 +27,9 @@ const getUsers = async (req, res) => {
   }
 };
 const createRequest = async (req, res) => {
-  const { title, description, location, urgency, user_id } = req.body;
-  const insertRequestQuery = `INSERT INTO Requests (title, description, location, urgency, status, user_id, assigned_to) VALUES ($1, $2, $3, $4, 'PENDING', $5, NULL)`;
+  const { title, description, location, urgency, user_id, category_id } =
+    req.body;
+  const insertRequestQuery = `INSERT INTO Requests (title, description, location, urgency, status, user_id, category_id, assigned_to) VALUES ($1, $2, $3, $4, 'PENDING', $5, $6, NULL)`;
   try {
     const results = await pool.query(insertRequestQuery, [
       title,
@@ -36,6 +37,7 @@ const createRequest = async (req, res) => {
       location,
       urgency,
       user_id,
+      category_id,
     ]);
     res.status(201).send(results.rows[0]);
   } catch (error) {
@@ -55,8 +57,9 @@ const getRequests = async (req, res) => {
 
 const updateRequestStudent = async (req, res) => {
   const { id } = req.params;
-  const { title, description, location, urgency, user_id } = req.body;
-  const updateQuery = `UPDATE Requests SET title = $1, description = $2, location = $3, urgency = $4, user_id = $5 WHERE id = $6 RETURNING *`;
+  const { title, description, location, urgency, user_id, category_id } =
+    req.body;
+  const updateQuery = `UPDATE Requests SET title = $1, description = $2, location = $3, urgency = $4, user_id = $5, category_id = $6 WHERE id = $7 RETURNING *`;
   try {
     const results = await pool.query(updateQuery, [
       title,
@@ -64,6 +67,7 @@ const updateRequestStudent = async (req, res) => {
       location,
       urgency,
       user_id,
+      category_id,
       id,
     ]);
     res.status(200).send(results.rows[0]);
@@ -83,6 +87,27 @@ const deleteRequest = async (req, res) => {
   }
 };
 
+const createCategory = async (req, res) => {
+  const { name } = req.body;
+  const createCategoryQuery = `INSERT INTO Categories (name) VALUES ($1)`;
+  try {
+    const results = await pool.query(createCategoryQuery, [name]);
+    res.status(201).send(results.rows[0]);
+  } catch (error) {
+    res.status(409).json({ error: error.message });
+  }
+};
+
+const getCategories = async (req, res) => {
+  const getCategoriesQuery = `SELECT * FROM Categories;`;
+  try {
+    const results = await pool.query(getCategoriesQuery);
+    res.status(200).json(results.rows);
+  } catch (error) {
+    res.status(409).json({ error: error.message });
+  }
+};
+
 export default {
   getUsers,
   createUser,
@@ -90,4 +115,6 @@ export default {
   getRequests,
   updateRequestStudent,
   deleteRequest,
+  createCategory,
+  getCategories,
 };

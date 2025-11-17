@@ -28,6 +28,7 @@ const createRequestsTable = async () => {
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       user_id INTEGER NOT NULL,
       assigned_to INTEGER,
+      category_id INTEGER REFERENCES Categories(id),
       FOREIGN KEY (user_id) REFERENCES Users(id),
       FOREIGN KEY (assigned_to) REFERENCES Users(id)
     );

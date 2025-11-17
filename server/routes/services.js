@@ -15,4 +15,8 @@ router.patch("/requests/:Id", serviceControllers.updateRequestStudent);
 
 router.delete("/requests/:Id", serviceControllers.deleteRequest);
 
+router.get("/categories", serviceControllers.getCategories);
+
+router.post("/categories", serviceControllers.createCategory);
+
 export default router;
