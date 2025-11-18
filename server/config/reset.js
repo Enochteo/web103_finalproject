@@ -29,6 +29,7 @@ const createRequestsTable = async () => {
       user_id INTEGER NOT NULL,
       assigned_to INTEGER,
       category_id INTEGER REFERENCES Categories(id),
+      photo_url VARCHAR(255),
       FOREIGN KEY (user_id) REFERENCES Users(id),
       FOREIGN KEY (assigned_to) REFERENCES Users(id)
     );

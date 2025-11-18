@@ -1,15 +1,22 @@
 import { pool } from "../config/database.js";
 import dotenv from "dotenv";
+import bcrypt from "bcrypt";
 
 const createUser = async (req, res) => {
   const { username, email, role, password } = req.body;
-  const insertUserQuery = `INSERT INTO Users (username, email, role, hashed_password) VALUES ($1, $2, $3, $4)`;
+  if (!password) return res.status(400).json({ error: "Password is required" });
+  const insertUserQuery = `INSERT INTO Users (username, email, role, hashed_password) VALUES ($1, $2, $3, $4) RETURNING *;`;
   try {
+    const hashed = await bcrypt.hash(password, 10);
+    if (!hashed || !hashed.startsWith("$2")) {
+      console.error("Unexpected hash produced", hashed);
+      return res.status(500).json({ error: "Password hashing failed" });
+    }
     const results = await pool.query(insertUserQuery, [
       username,
       email,
       role,
-      password,
+      hashed,
     ]);
     res.status(201).send(results.rows[0]);
   } catch (error) {
@@ -23,13 +30,20 @@ const getUsers = async (req, res) => {
     const results = await pool.query(getUsersQuery);
     res.status(200).json(results.rows);
   } catch (error) {
-    res.status(404).error({ error: error.message });
+    res.status(404).json({ error: error.message });
   }
 };
 const createRequest = async (req, res) => {
-  const { title, description, location, urgency, user_id, category_id } =
-    req.body;
-  const insertRequestQuery = `INSERT INTO Requests (title, description, location, urgency, status, user_id, category_id, assigned_to) VALUES ($1, $2, $3, $4, 'PENDING', $5, $6, NULL)`;
+  const {
+    title,
+    description,
+    location,
+    urgency,
+    category_id,
+    user_id,
+    photo_url,
+  } = req.body;
+  const insertRequestQuery = `INSERT INTO Requests (title, description, location, urgency, status, user_id, category_id, photo_url, assigned_to) VALUES ($1, $2, $3, $4, 'PENDING', $5, $6, $7, NULL)`;
   try {
     const results = await pool.query(insertRequestQuery, [
       title,
@@ -38,6 +52,7 @@ const createRequest = async (req, res) => {
       urgency,
       user_id,
       category_id,
+      photo_url,
     ]);
     res.status(201).send(results.rows[0]);
   } catch (error) {
