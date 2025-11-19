@@ -4,23 +4,32 @@ import dotenv from "dotenv";
 import cors from "cors";
 import session from "express-session";
 import passport from "./config/passport.js";
+import path from "path";
 
 dotenv.config();
 const app = express();
-app.use(cors({ origin: "http://localhost:5173", credentials: true }));
+
+// Allow trusting proxy when deployed (Render sits behind a proxy)
+app.set("trust proxy", 1);
+
+// In production we'll serve the built client from the server itself.
+// During development, allow the Vite dev server origin via CORS.
+const CLIENT_ORIGIN = process.env.CLIENT_URL || "http://localhost:5173";
+app.use(cors({ origin: CLIENT_ORIGIN, credentials: true }));
+
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use(
   session({
-    secret: process.env.SECRET_KEY,
+    secret: process.env.SECRET_KEY || process.env.SESSION_SECRET || "change-me",
     resave: false,
     saveUninitialized: false,
     cookie: {
-      // for local development over HTTP set `secure: false`
-      secure: false,
-      // allow cross-site requests from the dev client when using credentials
-      sameSite: "lax",
+      // secure cookies in production
+      secure: process.env.NODE_ENV === "production",
+      // if you host frontend on a different domain, you may need `sameSite: 'none'`
+      sameSite: process.env.NODE_ENV === "production" ? "lax" : "lax",
       maxAge: 1000 * 60 * 60 * 24, // 1 day
     },
   })
@@ -28,10 +37,25 @@ app.use(
 
 app.use(passport.initialize());
 app.use(passport.session());
+
+// API routes
 app.use("/api", router);
 
-const PORT = 3000;
+// Serve client static files when built
+const __dirname = path.resolve();
+const clientDist = path.join(__dirname, "../client/vite-project/dist");
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static(clientDist));
+  // fallback to index.html for SPA routes
+  app.get("*", (req, res) => {
+    // only serve index.html for non-API routes
+    if (req.path.startsWith("/api")) return res.status(404).end();
+    res.sendFile(path.join(clientDist, "index.html"));
+  });
+}
+
+const PORT = process.env.PORT ? Number(process.env.PORT) : 3000;
 
 app.listen(PORT, () => {
-  console.log(`server listening on http://localhost:${PORT}`);
+  console.log(`server listening on port ${PORT}`);
 });

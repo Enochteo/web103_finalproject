@@ -1,0 +1,43 @@
+.create-user-card {
+  max-width: 680px;
+  margin: 0 auto;
+}
+.create-user-card .form {
+  display: grid;
+  gap: 12px;
+}
+.create-user-card .form label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text);
+}
+.create-user-card .form input,
+.create-user-card .form select,
+.create-user-card .form textarea {
+  padding: 10px 12px;
+  border: 1px solid #d1e8ff;
+  border-radius: 8px;
+  background: var(--card-bg);
+  transition: box-shadow 0.12s ease, border-color 0.12s ease;
+  font-size: 1rem;
+  color: var(--text);
+}
+.create-user-card .form input:focus,
+.create-user-card .form textarea:focus,
+.create-user-card .form select:focus {
+  outline: none;
+  border-color: var(--brand);
+  box-shadow: 0 6px 20px rgba(31, 111, 235, 0.08);
+}
+.submit-btn {
+  width: 100%;
+}
+.submit-btn:hover {
+  background: var(--brand-600);
+}
+.form .hint {
+  color: var(--muted);
+  font-size: 0.9rem;
+}

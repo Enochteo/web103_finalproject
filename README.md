@@ -66,4 +66,53 @@ This immediate feedback improves user experience and ensures communication betwe
 
 ## Installation Instructions
 
-[instructions go here]
+# Service Link — Final Project
+
+This repository contains a two-part web application (client + server) for submitting and tracking service requests.
+
+Quick overview
+
+- `client/vite-project`: React front-end (Vite)
+- `server`: Node/Express back-end with Postgres (pg)
+
+Setup (local development)
+
+1. Server
+
+```bash
+cd server
+cp .env.example .env   # fill in your values (do NOT commit real secrets)
+npm install
+npm run reset-db       # creates tables
+npm run dev            # requires nodemon (install globally or add to devDependencies)
+```
+
+2. Client
+
+```bash
+cd client/vite-project
+npm install
+npm run dev
+```
+
+Testing authentication via curl (example)
+
+```bash
+# create a user
+curl -i -X POST http://localhost:3000/api \
+	-H "Content-Type: application/json" \
+	-d '{"username":"testuser","email":"test@example.com","role":"STUDENT","password":"secret123"}'
+
+# login and save cookie
+curl -i -c cookies.txt -X POST http://localhost:3000/api/login \
+	-H "Content-Type: application/json" \
+	-d '{"email":"test@example.com","password":"secret123"}'
+
+# check current session
+curl -i -b cookies.txt http://localhost:3000/api/me
+```
+
+Notes
+
+- Keep real secrets out of source control. Use `.env` or host-provided secret storage.
+- For production behind HTTPS, set `cookie.secure = true` and `app.set('trust proxy', 1)`.

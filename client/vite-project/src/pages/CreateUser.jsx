@@ -1,4 +1,5 @@
-import { React, useState } from "react";
+import React, { useState } from "react";
+import "./CreateUser.css";
 
 const CreateUser = () => {
   const [profile, setProfile] = useState({
@@ -19,7 +20,12 @@ const CreateUser = () => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(profile);
+
+    // basic validation
+    if (!profile.username || !profile.email || !profile.password) {
+      alert("Please fill username, email and password");
+      return;
+    }
 
     const options = {
       method: "POST",
@@ -28,30 +34,41 @@ const CreateUser = () => {
       },
       body: JSON.stringify(profile),
     };
+
     try {
-      const res = await fetch("http://localhost:3000/api", options);
+      const res = await fetch("/api", options);
+      if (!res.ok) {
+        const body = await res.json().catch(() => ({}));
+        console.error("Create user failed", res.status, body);
+        alert("Failed to create user");
+        return;
+      }
+
       console.log("User successfully created");
       setProfile({
         username: "",
         email: "",
-        role: "",
+        role: "STUDENT",
         password: "",
       });
+      alert("Account created. You may now login.");
     } catch (error) {
       console.error("Error", error);
+      alert("Network error creating user");
     }
   };
 
   return (
-    <>
-      <div>
-        <form>
+    <div className="page-container">
+      <div className="card create-user-card">
+        <form onSubmit={handleSubmit} className="form">
           <label> Username </label>
           <input
             type="text"
             name="username"
             value={profile.username}
             onChange={handleChange}
+            placeholder="Display name"
           />
 
           <label> School Email (.edu) </label>
@@ -69,23 +86,25 @@ const CreateUser = () => {
             value={profile.role}
             onChange={handleChange}
           >
-            <option value="STUDNET">STUDENT</option>
+            <option value="STUDENT">STUDENT</option>
             <option value="TECHNICIAN">TECHNICIAN</option>
-            <option value="ADMIN">ADMIN</option>
           </select>
 
           <label>Password</label>
           <input
-            type="text"
+            type="password"
             name="password"
             value={profile.password}
             onChange={handleChange}
+            placeholder="Choose a strong password"
           />
 
-          <button onClick={handleSubmit}>Register</button>
+          <button type="submit" className="submit-btn">
+            Register
+          </button>
         </form>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -5,6 +5,8 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "postinstall": "cd ../client/vite-project && npm install && npm run build",
+    "build-client": "cd ../client/vite-project && npm install && npm run build",
     "reset-db": "node config/reset.js",
     "hash-passwords": "node scripts/hash_existing_passwords.js",
     "test": "echo \"Error: no test specified\" && exit 1"
