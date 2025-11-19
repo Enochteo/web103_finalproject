@@ -265,12 +265,15 @@ const getTechnicianRequests = async (req, res) => {
   const technicianId = req.user && req.user.id;
   if (!technicianId)
     return res.status(401).json({ error: "Not authenticated" });
-  const getAssignedRequestsQuery = `SELECT * FROM Requests WHERE assigned_to = $1;`;
+  // Reuse the generic getRequests list logic but force assigned_to to this technician.
+  // This allows support for pagination, filtering and sorting via the same query params.
   try {
-    const results = await pool.query(getAssignedRequestsQuery, [technicianId]);
-    res.status(200).json(results.rows);
+    // Ensure assigned_to is set to the authenticated technician
+    req.query = req.query || {};
+    req.query.assigned_to = req.query.assigned_to || String(technicianId);
+    return getRequests(req, res);
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    return res.status(500).json({ error: error.message });
   }
 };
 
