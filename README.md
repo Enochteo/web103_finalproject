@@ -4,7 +4,7 @@ CodePath WEB103 Final Project
 
 Designed and developed by: Enoch Owoade, Jesse Rosenthal, Joshua Holguin
 
-🔗 Link to deployed app:
+🔗 Link to deployed app: https://service-link.onrender.com/
 
 ## About
 
@@ -57,10 +57,14 @@ This feature helps prioritize high-impact issues and maintain organized workflow
 Each request has a corresponding resolution record that stores details about how the issue was fixed, who resolved it, and when.
 This ensures proper documentation and allows staff to maintain a history of completed work.
 
-### Real-Time Notifications & Feedback
+### Real-Time Notifications & Feedback ✅
 
 Users receive confirmation messages or toast alerts when submitting, updating, or resolving a request.
 This immediate feedback improves user experience and ensures communication between reporters and maintenance staff remains seamless.
+
+### Walkthrough Demo
+
+<img src="./planning/images/final_project.gif">
 
 ### [ADDITIONAL FEATURES GO HERE - ADD ALL FEATURES HERE IN THE FORMAT ABOVE; you will check these off and add gifs as you complete them]
 
