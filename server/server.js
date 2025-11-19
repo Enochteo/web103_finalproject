@@ -46,11 +46,13 @@ const __dirname = path.resolve();
 const clientDist = path.join(__dirname, "../client/vite-project/dist");
 if (process.env.NODE_ENV === "production") {
   app.use(express.static(clientDist));
-  // fallback to index.html for SPA routes
-  app.get("*", (req, res) => {
-    // only serve index.html for non-API routes
-    if (req.path.startsWith("/api")) return res.status(404).end();
-    res.sendFile(path.join(clientDist, "index.html"));
+  // fallback to index.html for SPA routes — use middleware instead of a route pattern
+  app.use((req, res, next) => {
+    // only serve index.html for non-API GET requests
+    if (req.method !== "GET" || req.path.startsWith("/api")) return next();
+    res.sendFile(path.join(clientDist, "index.html"), (err) => {
+      if (err) next(err);
+    });
   });
 }
 
