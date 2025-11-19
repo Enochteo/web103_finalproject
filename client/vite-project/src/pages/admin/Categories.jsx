@@ -10,7 +10,8 @@ const AdminCategories = () => {
 
   useEffect(() => {
     if (!user) return navigate("/login");
-    if (user.role !== "ADMIN") return navigate("/login");
+    if ((user.role || "").toString().toUpperCase() !== "ADMIN")
+      return navigate("/login");
     fetchCategories();
   }, [user]);
 

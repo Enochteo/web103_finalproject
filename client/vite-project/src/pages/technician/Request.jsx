@@ -9,12 +9,14 @@ const TechnicianRequest = () => {
   const navigate = useNavigate();
   const [request, setRequest] = useState(null);
   const [resolution, setResolution] = useState(null);
+  const [usersMap, setUsersMap] = useState({});
   const [file, setFile] = useState(null);
   const [uploading, setUploading] = useState(false);
 
   useEffect(() => {
     if (!user) return navigate("/login");
-    if (user.role !== "TECHNICIAN") return navigate("/login");
+    if ((user.role || "").toString().toUpperCase() !== "TECHNICIAN")
+      return navigate("/login");
 
     async function fetchRequest() {
       try {
@@ -26,6 +28,14 @@ const TechnicianRequest = () => {
           const body = await res.json();
           // if API returns array or object
           setRequest(Array.isArray(body) ? body[0] : body);
+          // also load users map for nicer display
+          try {
+            const { getUsersMap } = await import("../../services/userService");
+            const map = await getUsersMap();
+            setUsersMap(map);
+          } catch (err) {
+            console.error("Failed to load users map", err);
+          }
           // fetch any existing resolution for this request
           try {
             const rr = await fetch(`/api/resolutions?request_id=${id}`, {
@@ -104,6 +114,12 @@ const TechnicianRequest = () => {
     <div className="page-container">
       <h2>{request.title}</h2>
       <p>{request.description}</p>
+      <p>
+        <strong>Submitted By:</strong>{" "}
+        {request.user_id
+          ? usersMap[request.user_id] || `User ${request.user_id}`
+          : "Unknown"}
+      </p>
       {request.photo_url && (
         <img src={request.photo_url} alt="request" style={{ maxWidth: 300 }} />
       )}
@@ -112,6 +128,12 @@ const TechnicianRequest = () => {
       </p>
       <p>
         <strong>Urgency:</strong> {request.urgency}
+      </p>
+      <p>
+        <strong>Assigned To:</strong>{" "}
+        {request.assigned_to
+          ? usersMap[request.assigned_to] || request.assigned_to
+          : "Unassigned"}
       </p>
       <p>
         <strong>Status:</strong> {request.status}

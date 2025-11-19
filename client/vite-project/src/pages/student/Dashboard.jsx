@@ -10,7 +10,8 @@ const StudentDashboard = () => {
 
   useEffect(() => {
     if (!user) return navigate("/login");
-    if (user.role !== "STUDENT") return navigate("/login");
+    if ((user.role || "").toString().toUpperCase() !== "STUDENT")
+      return navigate("/login");
 
     async function fetchMine() {
       setLoading(true);

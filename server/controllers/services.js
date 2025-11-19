@@ -270,7 +270,18 @@ const getTechnicianRequests = async (req, res) => {
   try {
     // Ensure assigned_to is set to the authenticated technician
     req.query = req.query || {};
+    // log for debugging assigned requests visibility
+    console.log(
+      "getTechnicianRequests: technicianId=",
+      technicianId,
+      "incoming assigned_to=",
+      req.query.assigned_to
+    );
     req.query.assigned_to = req.query.assigned_to || String(technicianId);
+    console.log(
+      "getTechnicianRequests: enforced assigned_to=",
+      req.query.assigned_to
+    );
     return getRequests(req, res);
   } catch (error) {
     return res.status(500).json({ error: error.message });

@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
+import { getUsersMap } from "../../services/userService";
 
 const AdminDashboard = () => {
   const { user } = useAuth();
@@ -11,10 +12,12 @@ const AdminDashboard = () => {
   const [sortDir, setSortDir] = useState("desc");
   const [queryText, setQueryText] = useState("");
   const [meta, setMeta] = useState(null);
+  const [usersMap, setUsersMap] = useState({});
 
   useEffect(() => {
     if (!user) return navigate("/login");
-    if (user.role !== "ADMIN") return navigate("/login");
+    if ((user.role || "").toString().toUpperCase() !== "ADMIN")
+      return navigate("/login");
 
     async function fetchAll() {
       try {
@@ -31,6 +34,13 @@ const AdminDashboard = () => {
         const rows = Array.isArray(body) ? body : body?.data ?? [];
         setRequests(rows);
         setMeta(body?.meta ?? null);
+        // fetch users map for nicer display
+        try {
+          const map = await getUsersMap();
+          setUsersMap(map);
+        } catch (err) {
+          console.error("Failed to load users map", err);
+        }
       } catch (err) {
         console.error(err);
       }
@@ -123,13 +133,20 @@ const AdminDashboard = () => {
             <h3>{r.title}</h3>
             <p>{r.description}</p>
             <p>
-              <strong>Assigned To:</strong> {r.assigned_to || "Unassigned"}
+              <strong>Submitted By:</strong>{" "}
+              {r.user_id
+                ? usersMap[r.user_id] || `User ${r.user_id}`
+                : "Unknown"}
             </p>
             <p>
-              <strong>Status:</strong> {r.status}
+              <strong>Assigned To:</strong>{" "}
+              {r.assigned_to
+                ? usersMap[r.assigned_to] || r.assigned_to
+                : "Unassigned"}
             </p>
+            {r.photo_url && <img src={r.photo_url} alt="Request photo" />}
             <Link to={`/admin/request/${r.id}`}>
-              <button>Details</button>
+              <button style={{ borderColor: "black" }}>Details</button>
             </Link>
           </div>
         ))}

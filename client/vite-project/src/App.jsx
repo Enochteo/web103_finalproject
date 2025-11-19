@@ -1,5 +1,5 @@
 import React from "react";
-import { Link, useRoutes } from "react-router-dom";
+import { Link, useRoutes, Navigate } from "react-router-dom";
 import CreateUser from "./pages/CreateUser";
 import CreateRequest from "./pages/CreateRequest";
 import LoginUser from "./pages/LoginUser";
@@ -17,19 +17,77 @@ import { AuthProvider, useAuth } from "./auth/AuthProvider";
 const AppInner = () => {
   const { user, logout } = useAuth();
 
+  const Protected = ({ children, roles = [] }) => {
+    if (!user) return <Navigate to="/login" replace />;
+    if (roles.length === 0) return children;
+    const role = (user.role || "").toString().toUpperCase();
+    const allowed = roles.map((r) => r.toString().toUpperCase());
+    if (!allowed.includes(role)) return <Navigate to="/login" replace />;
+    return children;
+  };
+
   const element = useRoutes([
     { path: "/", element: <Home /> },
     { path: "/register", element: <CreateUser /> },
     { path: "/makerequest", element: <CreateRequest /> },
     { path: "/login", element: <LoginUser /> },
     { path: "/requests", element: <ViewRequests /> },
-    { path: "/technician/dashboard", element: <TechnicianDashboard /> },
-    { path: "/technician/request/:id", element: <TechnicianRequest /> },
-    { path: "/admin/dashboard", element: <AdminDashboard /> },
-    { path: "/admin/request/:id", element: <AdminRequest /> },
-    { path: "/admin/categories", element: <AdminCategories /> },
-    { path: "/admin/create-user", element: <AdminCreateUser /> },
-    { path: "/student/my-requests", element: <StudentDashboard /> },
+    {
+      path: "/technician/dashboard",
+      element: (
+        <Protected roles={["TECHNICIAN"]}>
+          <TechnicianDashboard />
+        </Protected>
+      ),
+    },
+    {
+      path: "/technician/request/:id",
+      element: (
+        <Protected roles={["TECHNICIAN"]}>
+          <TechnicianRequest />
+        </Protected>
+      ),
+    },
+    {
+      path: "/admin/dashboard",
+      element: (
+        <Protected roles={["ADMIN"]}>
+          <AdminDashboard />
+        </Protected>
+      ),
+    },
+    {
+      path: "/admin/request/:id",
+      element: (
+        <Protected roles={["ADMIN"]}>
+          <AdminRequest />
+        </Protected>
+      ),
+    },
+    {
+      path: "/admin/categories",
+      element: (
+        <Protected roles={["ADMIN"]}>
+          <AdminCategories />
+        </Protected>
+      ),
+    },
+    {
+      path: "/admin/create-user",
+      element: (
+        <Protected roles={["ADMIN"]}>
+          <AdminCreateUser />
+        </Protected>
+      ),
+    },
+    {
+      path: "/student/my-requests",
+      element: (
+        <Protected roles={["STUDENT"]}>
+          <StudentDashboard />
+        </Protected>
+      ),
+    },
   ]);
 
   return (

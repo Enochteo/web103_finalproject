@@ -9,10 +9,12 @@ const AdminRequest = () => {
   const [request, setRequest] = useState(null);
   const [technicians, setTechnicians] = useState([]);
   const [assignTo, setAssignTo] = useState("");
+  const [usersMap, setUsersMap] = useState({});
 
   useEffect(() => {
     if (!user) return navigate("/login");
-    if (user.role !== "ADMIN") return navigate("/login");
+    if ((user.role || "").toString().toUpperCase() !== "ADMIN")
+      return navigate("/login");
 
     async function fetchData() {
       try {
@@ -23,7 +25,15 @@ const AdminRequest = () => {
         if (rRes.ok) setRequest(await rRes.json());
         if (uRes.ok) {
           const users = await uRes.json();
-          setTechnicians(users.filter((u) => u.role === "TECHNICIAN"));
+          const techs = users.filter(
+            (u) => (u.role || "").toString().toUpperCase() === "TECHNICIAN"
+          );
+          setTechnicians(techs);
+          const map = {};
+          (users || []).forEach((u) => {
+            if (u && u.id) map[u.id] = u.username || u.email || String(u.id);
+          });
+          setUsersMap(map);
         }
       } catch (err) {
         console.error(err);
@@ -68,10 +78,19 @@ const AdminRequest = () => {
       <h2>{request.title}</h2>
       <p>{request.description}</p>
       <p>
+        <strong>Submitted By:</strong>{" "}
+        {request.user_id
+          ? usersMap[request.user_id] || `User ${request.user_id}`
+          : "Unknown"}
+      </p>
+      <p>
         <strong>Status:</strong> {request.status}
       </p>
       <p>
-        <strong>Assigned To:</strong> {request.assigned_to || "Unassigned"}
+        <strong>Assigned To:</strong>{" "}
+        {request.assigned_to
+          ? usersMap[request.assigned_to] || request.assigned_to
+          : "Unassigned"}
       </p>
 
       <div>
@@ -87,8 +106,18 @@ const AdminRequest = () => {
       </div>
 
       <div style={{ marginTop: 12 }}>
-        <button onClick={() => updateStatus("IN_PROGRESS")}>Start Work</button>
-        <button onClick={() => updateStatus("RESOLVED")}>Resolve</button>
+        <button
+          onClick={() => updateStatus("IN_PROGRESS")}
+          style={{ color: "blue" }}
+        >
+          Start Work
+        </button>
+        <button
+          onClick={() => updateStatus("RESOLVED")}
+          style={{ color: "green" }}
+        >
+          Resolve
+        </button>
       </div>
     </div>
   );

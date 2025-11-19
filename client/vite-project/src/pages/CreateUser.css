@@ -1,9 +1,12 @@
 .create-user-card {
-  max-width: 680px;
-  margin: 0 auto;
+  max-width: 720px;
+  margin: 20px auto;
+  padding: 18px;
+  border-radius: 12px;
+  box-shadow: 0 8px 30px rgba(17, 24, 39, 0.06);
 }
 .create-user-card .form {
-  display: grid;
+  display: block;
   gap: 12px;
 }
 .create-user-card .form label {
@@ -40,4 +43,72 @@
 .form .hint {
   color: var(--muted);
   font-size: 0.9rem;
+}
+
+/* header */
+.create-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+.create-header h2 {
+  margin: 0 0 4px 0;
+  font-size: 1.35rem;
+}
+.create-header .muted {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+/* grid layout for form */
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+@media (min-width: 720px) {
+  .form-grid {
+    grid-template-columns: 1fr 1fr;
+    align-items: start;
+  }
+  .form-grid .field:nth-child(5) {
+    grid-column: 1 / -1;
+  }
+  .submit-row {
+    grid-column: 1 / -1;
+  }
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.submit-row {
+  margin-top: 6px;
+}
+
+.submit-btn {
+  background: var(--brand);
+  color: white;
+  border: none;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.brand-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 8px;
+  overflow: hidden;
 }

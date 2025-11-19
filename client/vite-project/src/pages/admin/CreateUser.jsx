@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
+import "../CreateUser.css";
 
 const AdminCreateUser = () => {
   const { user } = useAuth();
@@ -16,7 +17,8 @@ const AdminCreateUser = () => {
 
   useEffect(() => {
     if (!user) return navigate("/login");
-    if (user.role !== "ADMIN") return navigate("/login");
+    if ((user.role || "").toString().toUpperCase() !== "ADMIN")
+      return navigate("/login");
   }, [user]);
 
   const handleChange = (e) => {
@@ -60,41 +62,75 @@ const AdminCreateUser = () => {
   return (
     <div className="page-container">
       <div className="card form-card">
-        <h2>Create User (Admin)</h2>
-        <form onSubmit={handleSubmit} className="form">
-          <label>Username</label>
-          <input
-            name="username"
-            value={form.username}
-            onChange={handleChange}
-            required
-          />
+        <header className="create-header">
+          <div className="brand-icon" aria-hidden>
+            <svg
+              width="40"
+              height="40"
+              viewBox="0 0 24 24"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <rect width="24" height="24" rx="6" fill="var(--brand)" />
+              <path
+                d="M7 12h10M7 8h10M7 16h6"
+                stroke="white"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              />
+            </svg>
+          </div>
+          <div>
+            <h2>Create User (Admin)</h2>
+            <p className="muted">
+              Create technician or admin accounts from here.
+            </p>
+          </div>
+        </header>
 
-          <label>Email</label>
-          <input
-            name="email"
-            type="email"
-            value={form.email}
-            onChange={handleChange}
-            required
-          />
+        <form onSubmit={handleSubmit} className="form form-grid">
+          <div className="field">
+            <label>Username</label>
+            <input
+              name="username"
+              value={form.username}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <label>Role</label>
-          <select name="role" value={form.role} onChange={handleChange}>
-            <option value="TECHNICIAN">TECHNICIAN</option>
-            <option value="ADMIN">ADMIN</option>
-          </select>
+          <div className="field">
+            <label>Email</label>
+            <input
+              name="email"
+              type="email"
+              value={form.email}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-          <label>Password</label>
-          <input
-            name="password"
-            type="password"
-            value={form.password}
-            onChange={handleChange}
-            required
-          />
+          <div className="field">
+            <label>Role</label>
+            <select name="role" value={form.role} onChange={handleChange}>
+              <option value="TECHNICIAN">TECHNICIAN</option>
+              <option value="ADMIN">ADMIN</option>
+            </select>
+          </div>
 
-          <div style={{ display: "flex", gap: 8, marginTop: 12 }}>
+          <div className="field">
+            <label>Password</label>
+            <input
+              name="password"
+              type="password"
+              value={form.password}
+              onChange={handleChange}
+              required
+            />
+          </div>
+
+          <div className="submit-row">
             <button className="btn primary" type="submit" disabled={loading}>
               {loading ? "Creating…" : "Create"}
             </button>

@@ -1,8 +1,10 @@
 import { React, useState, useEffect } from "react";
 import "./ViewRequest.css";
+import { getUsersMap } from "../services/userService";
 
 const ViewRequests = () => {
   const [requests, setRequests] = useState([]);
+  const [usersMap, setUsersMap] = useState({});
 
   useEffect(() => {
     const getAllRequests = async () => {
@@ -23,6 +25,15 @@ const ViewRequests = () => {
       }
     };
     getAllRequests();
+    // load users map for display
+    (async () => {
+      try {
+        const map = await getUsersMap();
+        setUsersMap(map);
+      } catch (err) {
+        console.error("Failed to load users map", err);
+      }
+    })();
   }, []);
   const handleDelete = async (id) => {
     try {
@@ -37,6 +48,12 @@ const ViewRequests = () => {
       console.error("Error deleting request", error);
     }
   };
+  const showRequestStatus = (request) => {
+    if (request.status === "IN_PROGRESS") {
+      return "IN PROGRESS";
+    }
+    return request.status;
+  };
   return (
     <div className="page-container">
       <div className="list">
@@ -45,7 +62,12 @@ const ViewRequests = () => {
             <div key={request.id} className="card request-card">
               <div>
                 <h3>{request.title}</h3>
-                <p className="muted">Made by: User {request.user_id}</p>
+                <p className="muted">
+                  Made by:{" "}
+                  {request.user_id
+                    ? usersMap[request.user_id] || `User ${request.user_id}`
+                    : "Unknown"}
+                </p>
                 <p>{request.description}</p>
                 <div className="meta">
                   <span
@@ -53,7 +75,7 @@ const ViewRequests = () => {
                       request.status || ""
                     ).toLowerCase()}`}
                   >
-                    {request.status}
+                    {showRequestStatus(request)}
                   </span>
                   <span className="muted">Category: {request.category_id}</span>
                   <span className="muted">Urgency: {request.urgency}</span>
@@ -62,6 +84,7 @@ const ViewRequests = () => {
                   <button
                     className="btn ghost"
                     onClick={() => handleDelete(request.id)}
+                    style={{ color: "red" }}
                   >
                     Delete
                   </button>

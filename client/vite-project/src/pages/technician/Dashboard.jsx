@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../auth/AuthProvider";
+import { getUsersMap } from "../../services/userService";
 
 const TechnicianDashboard = () => {
   const { user } = useAuth();
@@ -13,10 +14,12 @@ const TechnicianDashboard = () => {
   const [sortDir, setSortDir] = useState("desc");
   const [queryText, setQueryText] = useState("");
   const [meta, setMeta] = useState(null);
+  const [usersMap, setUsersMap] = useState({});
 
   useEffect(() => {
     if (!user) return navigate("/login");
-    if (user.role !== "TECHNICIAN") return navigate("/login");
+    if ((user.role || "").toString().toUpperCase() !== "TECHNICIAN")
+      return navigate("/login");
 
     async function fetchAssigned() {
       setLoading(true);
@@ -37,6 +40,13 @@ const TechnicianDashboard = () => {
         const rows = Array.isArray(body) ? body : body?.data ?? [];
         setMeta(body?.meta ?? null);
         setRequests(rows);
+        // get users map so we can show names instead of ids
+        try {
+          const map = await getUsersMap();
+          setUsersMap(map);
+        } catch (err) {
+          console.error("Failed to load users map", err);
+        }
         // fetch resolutions for these request ids
         const ids = rows.map((r) => r.id).filter(Boolean);
         if (ids.length > 0) {
@@ -193,7 +203,19 @@ const TechnicianDashboard = () => {
               </div>
             )}
             <p>
+              <strong>Submitted By:</strong>{" "}
+              {r.user_id
+                ? usersMap[r.user_id] || `User ${r.user_id}`
+                : "Unknown"}
+            </p>
+            <p>
               <strong>Category:</strong> {r.category_id}
+            </p>
+            <p>
+              <strong>Assigned To:</strong>{" "}
+              {r.assigned_to
+                ? usersMap[r.assigned_to] || r.assigned_to
+                : "Unassigned"}
             </p>
             <p>
               <strong>Urgency:</strong> {r.urgency}
