@@ -25,6 +25,7 @@ const createRequestsTable = async () => {
       location VARCHAR(100) NOT NULL,
       urgency VARCHAR(10) CHECK (urgency IN ('LOW', 'MEDIUM', 'HIGH')) NOT NULL,
       status VARCHAR(20) CHECK (status IN ('PENDING', 'IN_PROGRESS', 'RESOLVED')) NOT NULL,
+      photo_url VARCHAR(255),
       created_at TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP,
       user_id INTEGER NOT NULL,
       assigned_to INTEGER,
